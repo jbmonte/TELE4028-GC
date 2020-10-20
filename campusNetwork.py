@@ -37,7 +37,8 @@ class SDNTopo( Topo ):
 
         #hosts
 
-        h1 = self.addHost( 'h1' , ip='192.168.1.1/24' , defaultRoute='192.168.1.100' )
+        #h1 = self.addHost( 'h1' , ip='192.168.1.1/24' , defaultRoute='192.168.1.100' )
+	h1 = self.addHost( 'h1', ip="192.168.1.1/24", defaultRoute = "via 192.168.1.100" )
 
         h2 = self.addHost( 'h2' , ip='192.168.1.2/24' )
 
