@@ -1,7 +1,7 @@
 from mininet.topo import Topo
 from mininet.net import Mininet
 from mininet.cli import CLI
-mdoipsec.sh '192.0.2.1|10.0.0.0/24|10.0.0.254|eth0' '198.51.100.20|172.16.0.0/24|172.16.0.1|eth1'
+#mdoipsec.sh '192.0.2.1|10.0.0.0/24|10.0.0.254|eth0' '198.51.100.20|172.16.0.0/24|172.16.0.1|eth1'
 
 
 class SDNTopo( Topo ):
