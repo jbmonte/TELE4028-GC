@@ -147,29 +147,36 @@ class SDNTopo( Topo ):
 
         self.addLink( s4, i16 )
 	
-	keys[1] = b'\xbf\xc0\x85)\x10nc\x94\x02)j\xdf\xcb\xc4\x94\x9d(\x9e[EX\xc8\xd5\xbfI{\xa2$\x05(\xd5\x18'
-	keys[2] = b'\xbf\xc0\x85)\x10nc\x94\x02)j\xdf\xcb\xc4\x94\x9d(\x9e[EX\xc8\xd5\xbfI{\xa2$\x05(\xd5\x18'
-	keys[3] = b'\xbf\xc0\x85)\x10nc\x94\x02)j\xdf\xcb\xc4\x94\x9d(\x9e[EX\xc8\xd5\xbfI{\xa2$\x05(\xd5\x18'
-	keys[4] = b'\xbf\xc0\x85)\x10nc\x94\x02)j\xdf\xcb\xc4\x94\x9d(\x9e[EX\xc8\xd5\xbfI{\xa2$\x05(\xd5\x18'
-	
-	spi[1] = b'\xbf\xc0\x85)\x10nc\x94\x02)j\xdf\xcb\xc4\x94\x9d(\x9e[EX\xc8\xd5\xbfI{\xa2$\x05(\xd5\x18'
-	spi[2] = b'\xbf\xc0\x85)\x10nc\x94\x02)j\xdf\xcb\xc4\x94\x9d(\x9e[EX\xc8\xd5\xbfI{\xa2$\x05(\xd5\x18'
-	
-	reqid[1] = b'\xbf\xc0\x85)\x10nc\x94\x02)j\xdf\xcb\xc4\x94\x9d(\x9e[EX\xc8\xd5\xbfI{\xa2$\x05(\xd5\x18'
-	reqid[2] = b'\xbf\xc0\x85)\x10nc\x94\x02)j\xdf\xcb\xc4\x94\x9d(\x9e[EX\xc8\xd5\xbfI{\xa2$\x05(\xd5\x18'
-	
-	ip xfrm state add src 192.0.2.1 dst 198.51.100.20 proto esp spi spi[1] reqid reqid[1] mode tunnel auth sha256 keys[1] enc aes keys[2]
-	ip xfrm state add src 198.51.100.20 dst 192.0.2.1 proto esp spi spi[2] reqid reqid[1] mode tunnel auth sha256 keys[3] enc aes keys[4]
+$mdoipsec.sh '192.0.2.1|10.0.0.0/24|10.0.0.254|eth0' '198.51.100.20|172.16.0.0/24|172.16.0.1|eth1'
+#**********************
+#Commands to run on GW1
+#**********************
 
-	# for GW1
-	ip xfrm policy add src 10.0.0.0/24 dst 172.16.0.0/24 dir out tmpl src 192.0.2.1 dst 198.51.100.20 proto esp reqid "0x${reqid[1]}" mode tunnel
-	ip xfrm policy add src 172.16.0.0/24 dst 10.0.0.0/24 dir fwd tmpl src 198.51.100.20 dst 192.0.2.1 proto esp reqid "0x${reqid[2]}" mode tunnel
-	ip xfrm policy add src 172.16.0.0/24 dst 10.0.0.0/24 dir in tmpl src 198.51.100.20 dst 192.0.2.1 proto esp reqid "0x${reqid[2]}" mode tunnel
+ip xfrm state flush; ip xfrm policy flush
 
-	# for GW2
-	ip xfrm policy add src 172.16.0.0/24 dst 10.0.0.0/24 dir out tmpl src 198.51.100.20 dst 192.0.2.1 proto esp reqid "0x${reqid[2]}" mode tunnel
-	ip xfrm policy add src 10.0.0.0/24 dst 172.16.0.0/24 dir fwd tmpl src 192.0.2.1 dst 198.51.100.20 proto esp reqid "0x${reqid[1]}" mode tunnel
-	ip xfrm policy add src 10.0.0.0/24 dst 172.16.0.0/24 dir in tmpl src 192.0.2.1 dst 198.51.100.20 proto esp reqid "0x${reqid[1]}" mode tunnel
+ip xfrm state add src 192.0.2.1 dst 198.51.100.20 proto esp spi 0xfd51141e reqid 0x62502e58 mode tunnel auth sha256 0x4046c2f9ff22725b850e2d981968249dc6c25fba189e701cf9a14e921f91cffb enc aes 0xccd80053ae1b55113a89bc476d0de1d9e8b7bc94655f3af1b0dad7bb9ada1065
+ip xfrm state add src 198.51.100.20 dst 192.0.2.1 proto esp spi 0x34e0aac0 reqid 0x66a32a19 mode tunnel auth sha256 0x1caf04f262e889b9b53b6c95bfbb4ef0292616362e8878fe96123610ca000892 enc aes 0x9380e038247fcd893d4f8799389b90bfa4d0b09195495bb94fe3a9fa5c5b699d
+
+ip xfrm policy add src 10.0.0.0/24 dst 172.16.0.0/24 dir out tmpl src 192.0.2.1 dst 198.51.100.20 proto esp reqid 0x62502e58 mode tunnel
+ip xfrm policy add src 172.16.0.0/24 dst 10.0.0.0/24 dir fwd tmpl src 198.51.100.20 dst 192.0.2.1 proto esp reqid 0x66a32a19 mode tunnel
+ip xfrm policy add src 172.16.0.0/24 dst 10.0.0.0/24 dir in tmpl src 198.51.100.20 dst 192.0.2.1 proto esp reqid 0x66a32a19 mode tunnel
+
+ip route add 172.16.0.0/24 dev eth0 src 10.0.0.254
+
+#**********************
+#Commands to run on GW2
+#**********************
+
+ip xfrm state flush; ip xfrm policy flush
+
+ip xfrm state add src 192.0.2.1 dst 198.51.100.20 proto esp spi 0xfd51141e reqid 0x62502e58 mode tunnel auth sha256 0x4046c2f9ff22725b850e2d981968249dc6c25fba189e701cf9a14e921f91cffb enc aes 0xccd80053ae1b55113a89bc476d0de1d9e8b7bc94655f3af1b0dad7bb9ada1065
+ip xfrm state add src 198.51.100.20 dst 192.0.2.1 proto esp spi 0x34e0aac0 reqid 0x66a32a19 mode tunnel auth sha256 0x1caf04f262e889b9b53b6c95bfbb4ef0292616362e8878fe96123610ca000892 enc aes 0x9380e038247fcd893d4f8799389b90bfa4d0b09195495bb94fe3a9fa5c5b699d
+
+ip xfrm policy add src 172.16.0.0/24 dst 10.0.0.0/24 dir out tmpl src 198.51.100.20 dst 192.0.2.1 proto esp reqid 0x66a32a19 mode tunnel
+ip xfrm policy add src 10.0.0.0/24 dst 172.16.0.0/24 dir fwd tmpl src 192.0.2.1 dst 198.51.100.20 proto esp reqid 0x62502e58 mode tunnel
+ip xfrm policy add src 10.0.0.0/24 dst 172.16.0.0/24 dir in tmpl src 192.0.2.1 dst 198.51.100.20 proto esp reqid 0x62502e58 mode tunnel
+
+ip route add 10.0.0.0/24 dev eth1 src 172.16.0.1
 
 
 topo = SDNTopo( )
