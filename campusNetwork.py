@@ -144,6 +144,30 @@ class SDNTopo( Topo ):
         self.addLink( s4, i15 )
 
         self.addLink( s4, i16 )
+	
+	keys[1] = b'\xbf\xc0\x85)\x10nc\x94\x02)j\xdf\xcb\xc4\x94\x9d(\x9e[EX\xc8\xd5\xbfI{\xa2$\x05(\xd5\x18'
+	keys[2] = b'\xbf\xc0\x85)\x10nc\x94\x02)j\xdf\xcb\xc4\x94\x9d(\x9e[EX\xc8\xd5\xbfI{\xa2$\x05(\xd5\x18'
+	keys[3] = b'\xbf\xc0\x85)\x10nc\x94\x02)j\xdf\xcb\xc4\x94\x9d(\x9e[EX\xc8\xd5\xbfI{\xa2$\x05(\xd5\x18'
+	keys[4] = b'\xbf\xc0\x85)\x10nc\x94\x02)j\xdf\xcb\xc4\x94\x9d(\x9e[EX\xc8\xd5\xbfI{\xa2$\x05(\xd5\x18'
+	
+	spi[1] = b'\xbf\xc0\x85)\x10nc\x94\x02)j\xdf\xcb\xc4\x94\x9d(\x9e[EX\xc8\xd5\xbfI{\xa2$\x05(\xd5\x18'
+	spi[2] = b'\xbf\xc0\x85)\x10nc\x94\x02)j\xdf\xcb\xc4\x94\x9d(\x9e[EX\xc8\xd5\xbfI{\xa2$\x05(\xd5\x18'
+	
+	reqid[1] = b'\xbf\xc0\x85)\x10nc\x94\x02)j\xdf\xcb\xc4\x94\x9d(\x9e[EX\xc8\xd5\xbfI{\xa2$\x05(\xd5\x18'
+	reqid[2] = b'\xbf\xc0\x85)\x10nc\x94\x02)j\xdf\xcb\xc4\x94\x9d(\x9e[EX\xc8\xd5\xbfI{\xa2$\x05(\xd5\x18'
+	
+	s1 ip xfrm state add src 192.0.2.1 dst 198.51.100.20 proto esp spi spi[1] reqid reqid[1] mode tunnel auth sha256 keys[1] enc aes keys[2]
+	s1 ip xfrm state add src 198.51.100.20 dst 192.0.2.1 proto esp spi spi[2] reqid reqid[1] mode tunnel auth sha256 keys[3] enc aes keys[4]
+
+	# for GW1
+	ip xfrm policy add src 10.0.0.0/24 dst 172.16.0.0/24 dir out tmpl src 192.0.2.1 dst 198.51.100.20 proto esp reqid "0x${reqid[1]}" mode tunnel
+	ip xfrm policy add src 172.16.0.0/24 dst 10.0.0.0/24 dir fwd tmpl src 198.51.100.20 dst 192.0.2.1 proto esp reqid "0x${reqid[2]}" mode tunnel
+	ip xfrm policy add src 172.16.0.0/24 dst 10.0.0.0/24 dir in tmpl src 198.51.100.20 dst 192.0.2.1 proto esp reqid "0x${reqid[2]}" mode tunnel
+
+	# for GW2
+	ip xfrm policy add src 172.16.0.0/24 dst 10.0.0.0/24 dir out tmpl src 198.51.100.20 dst 192.0.2.1 proto esp reqid "0x${reqid[2]}" mode tunnel
+	ip xfrm policy add src 10.0.0.0/24 dst 172.16.0.0/24 dir fwd tmpl src 192.0.2.1 dst 198.51.100.20 proto esp reqid "0x${reqid[1]}" mode tunnel
+	ip xfrm policy add src 10.0.0.0/24 dst 172.16.0.0/24 dir in tmpl src 192.0.2.1 dst 198.51.100.20 proto esp reqid "0x${reqid[1]}" mode tunnel
 
 topo = SDNTopo( )
 net = Mininet( topo )
