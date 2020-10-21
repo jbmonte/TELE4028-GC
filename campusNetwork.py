@@ -158,8 +158,8 @@ class SDNTopo( Topo ):
 	reqid[1] = b'\xbf\xc0\x85)\x10nc\x94\x02)j\xdf\xcb\xc4\x94\x9d(\x9e[EX\xc8\xd5\xbfI{\xa2$\x05(\xd5\x18'
 	reqid[2] = b'\xbf\xc0\x85)\x10nc\x94\x02)j\xdf\xcb\xc4\x94\x9d(\x9e[EX\xc8\xd5\xbfI{\xa2$\x05(\xd5\x18'
 	
-	ip xfrm state add src 192.0.2.1 dst 198.51.100.20 proto esp spi "0x${spi[1]}" reqid "0x${reqid[1]}" mode tunnel auth sha256 "0x${keys[1]}" enc aes "0x${keys[2]}"
-	ip xfrm state add src 198.51.100.20 dst 192.0.2.1 proto esp spi "0x${spi[2]}" reqid "0x${reqid[2]}" mode tunnel auth sha256 "0x${keys[3]}" enc aes "0x${keys[4]}"
+	ip xfrm state add src 192.0.2.1 dst 198.51.100.20 proto esp spi spi[1] reqid reqid[1] mode tunnel auth sha256 keys[1] enc aes keys[2]
+	ip xfrm state add src 198.51.100.20 dst 192.0.2.1 proto esp spi spi[2] reqid reqid[1] mode tunnel auth sha256 keys[3] enc aes keys[4]
 
 	# for GW1
 	ip xfrm policy add src 10.0.0.0/24 dst 172.16.0.0/24 dir out tmpl src 192.0.2.1 dst 198.51.100.20 proto esp reqid "0x${reqid[1]}" mode tunnel
