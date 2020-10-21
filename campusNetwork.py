@@ -149,18 +149,18 @@ class SDNTopo( Topo ):
 	
 	# bash
 	keys = []
-	for i in {1..4}; do
+	for x in range(1,5):
   		# keys 1 and 3 are for HMAC, keys 2 and 4 are for encryption
-  		keys[i]=$(xxd -p -l 32 -c 32 /dev/random)
+  		keys[x]=$(xxd -p -l 32 -c 32 /dev/random)
 	done
 	
 	spi = []
-	for i in {1..2}; do
-  		spi[i]=$(xxd -p -l 4 /dev/random)
+	for x in range(1,3):
+  		spi[x]=$(xxd -p -l 4 /dev/random)
 	done
 	
 	reqid = []
-	for i in {1..2}; do
+	for x in range(1,3):
   		reqid[i]=$(xxd -p -l 4 /dev/random)
 	done
 	
