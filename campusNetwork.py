@@ -147,22 +147,16 @@ class SDNTopo( Topo ):
 
         self.addLink( s4, i16 )
 	
-	# bash
-	keys = []
-	for i in range(1,5):
-  		# keys 1 and 3 are for HMAC, keys 2 and 4 are for encryption
-  		keys[i]=$(xxd -p -l 32 -c 32 /dev/random)
-	done
+	keys[1] = b'\xbf\xc0\x85)\x10nc\x94\x02)j\xdf\xcb\xc4\x94\x9d(\x9e[EX\xc8\xd5\xbfI{\xa2$\x05(\xd5\x18'
+	keys[2] = b'\xbf\xc0\x85)\x10nc\x94\x02)j\xdf\xcb\xc4\x94\x9d(\x9e[EX\xc8\xd5\xbfI{\xa2$\x05(\xd5\x18'
+	keys[3] = b'\xbf\xc0\x85)\x10nc\x94\x02)j\xdf\xcb\xc4\x94\x9d(\x9e[EX\xc8\xd5\xbfI{\xa2$\x05(\xd5\x18'
+	keys[4] = b'\xbf\xc0\x85)\x10nc\x94\x02)j\xdf\xcb\xc4\x94\x9d(\x9e[EX\xc8\xd5\xbfI{\xa2$\x05(\xd5\x18'
 	
-	spi = []
-	for i in range(1,3):
-  		spi[i]=$(xxd -p -l 4 /dev/random)
-	done
+	spi[1] = b'\xbf\xc0\x85)\x10nc\x94\x02)j\xdf\xcb\xc4\x94\x9d(\x9e[EX\xc8\xd5\xbfI{\xa2$\x05(\xd5\x18'
+	spi[2] = b'\xbf\xc0\x85)\x10nc\x94\x02)j\xdf\xcb\xc4\x94\x9d(\x9e[EX\xc8\xd5\xbfI{\xa2$\x05(\xd5\x18'
 	
-	reqid = []
-	for i in range(1,3):
-  		reqid[i]=$(xxd -p -l 4 /dev/random)
-	done
+	reqid[1] = b'\xbf\xc0\x85)\x10nc\x94\x02)j\xdf\xcb\xc4\x94\x9d(\x9e[EX\xc8\xd5\xbfI{\xa2$\x05(\xd5\x18'
+	reqid[2] = b'\xbf\xc0\x85)\x10nc\x94\x02)j\xdf\xcb\xc4\x94\x9d(\x9e[EX\xc8\xd5\xbfI{\xa2$\x05(\xd5\x18'
 	
 	ip xfrm state add src 192.0.2.1 dst 198.51.100.20 proto esp spi "0x${spi[1]}" reqid "0x${reqid[1]}" mode tunnel auth sha256 "0x${keys[1]}" enc aes "0x${keys[2]}"
 	ip xfrm state add src 198.51.100.20 dst 192.0.2.1 proto esp spi "0x${spi[2]}" reqid "0x${reqid[2]}" mode tunnel auth sha256 "0x${keys[3]}" enc aes "0x${keys[4]}"
