@@ -148,18 +148,18 @@ class SDNTopo( Topo ):
         self.addLink( s4, i16 )
 	
 	# bash
-	declare -a keys
+	keys = []
 	for i in {1..4}; do
   		# keys 1 and 3 are for HMAC, keys 2 and 4 are for encryption
   		keys[i]=$(xxd -p -l 32 -c 32 /dev/random)
 	done
 	
-	declare -a spi
+	spi = []
 	for i in {1..2}; do
   		spi[i]=$(xxd -p -l 4 /dev/random)
 	done
 	
-	declare -a reqid
+	reqid = []
 	for i in {1..2}; do
   		reqid[i]=$(xxd -p -l 4 /dev/random)
 	done
