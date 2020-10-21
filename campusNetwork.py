@@ -21,13 +21,13 @@ class SDNTopo( Topo ):
 	#r1 = net.addHost('r1', cls=LinuxRouter)
 	#or something like that, if you want to make it an actual router
 
-        r1 = self.addSwitch( 'r1' ip="176.16.0.1", defaultRoute = "via 198.51.100.254" ) #Public Router GW2 for external host
+        r1 = self.addSwitch( 'r1', ip='176.16.0.1', defaultRoute = "via 198.51.100.254" ) #Public Router GW2 for external host
 
         r2 = self.addSwitch( 'r2' ) #Campus Router
 
         #switches
 
-        s1 = self.addSwitch ( 's1' ip="10.0.0.1", defaultRoute = "via 192.0.2.254" )#Sys Admin GW1 for internal nodes
+        s1 = self.addSwitch ( 's1', ip='10.0.0.1', defaultRoute = "via 192.0.2.254" )#Sys Admin GW1 for internal nodes
 
         s2 = self.addSwitch ( 's2' )#Staff Access
 
@@ -38,7 +38,7 @@ class SDNTopo( Topo ):
         #hosts
 
         #h1 = self.addHost( 'h1' , ip='192.168.1.1/24' , defaultRoute='192.168.1.100' )
-	h1 = self.addHost( 'h1', ip="172.16.0.0/24", defaultRoute = "via 172.16.0.1" )
+	h1 = self.addHost( 'h1', ip='172.16.0.0/24', defaultRoute = "via 172.16.0.1" )
 
         h2 = self.addHost( 'h2' , ip='172.16.0.2/24' )
 
@@ -51,7 +51,7 @@ class SDNTopo( Topo ):
 
 
         #i1 = self.addHost( 'i1' , ip='10.0.0.1/24' )
-	i1 = self.addHost( 'i1', ip="10.0.0.0/24", defaultRoute = "via 10.0.0.1" )
+	i1 = self.addHost( 'i1', ip='10.0.0.0/24', defaultRoute = "via 10.0.0.1" )
 
         i2 = self.addHost( 'i2' , ip='10.0.0.2/24' )
 
